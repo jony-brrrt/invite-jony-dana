@@ -3,7 +3,7 @@
   --fg: #fff;
   --muted: rgba(255, 255, 255, 0.7);
   --border: rgba(255, 255, 255, 0.25);
-  --panel: rgba(0, 0, 0, 0.45);
+  --panel: rgba(0, 0, 0, 0.35);
   --accent: #fff;
   --error: #ff6b6b;
   --success: #6bff9c;
@@ -26,13 +26,17 @@ html { background: var(--bg); }
 
 .bg-video {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   height: 100dvh;
+  min-width: 100vw;
+  min-height: 100vh;
   object-fit: cover;
   z-index: 0;
   pointer-events: none;
+  display: block;
 }
 
 .overlay { z-index: 1 !important; }
@@ -52,11 +56,11 @@ html { background: var(--bg); }
   background:
     radial-gradient(
       ellipse at center,
-      rgba(0, 0, 0, 0) 40%,
-      rgba(0, 0, 0, 0.55) 100%
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0.35) 100%
     ),
-    rgba(0, 0, 0, 0.2);
-  z-index: -1;
+    rgba(0, 0, 0, 0.1);
+  z-index: 1;
   pointer-events: none;
 }
 

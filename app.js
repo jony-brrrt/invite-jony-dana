@@ -15,7 +15,27 @@ video.addEventListener("error", () => {
   const err = video.error;
   console.error("Video error:", err && err.code, err && err.message, "src:", video.currentSrc);
 });
-video.addEventListener("loadeddata", () => console.log("Video loaded:", video.videoWidth, "x", video.videoHeight));
+video.addEventListener("loadeddata", () => console.log("Video loaded:", video.videoWidth, "x", video.videoHeight, "paused:", video.paused));
+video.addEventListener("playing", () => console.log("Video playing"));
+
+// Force play attempts — some Android Chrome builds need this nudge.
+function tryPlayVideo() {
+  video.muted = true;
+  video.setAttribute("muted", "");
+  const p = video.play();
+  if (p && typeof p.catch === "function") {
+    p.catch((err) => console.warn("Video play blocked:", err && err.name, err && err.message));
+  }
+}
+
+tryPlayVideo();
+document.addEventListener("DOMContentLoaded", tryPlayVideo);
+window.addEventListener("load", tryPlayVideo);
+window.addEventListener("pointerdown", tryPlayVideo, { once: true });
+window.addEventListener("touchstart", tryPlayVideo, { once: true, passive: true });
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && video.paused) tryPlayVideo();
+});
 
 const audio = document.getElementById("bg-audio");
 const muteBtn = document.getElementById("mute-btn");
