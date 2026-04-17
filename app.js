@@ -10,10 +10,16 @@ import { firebaseConfig } from "./firebase-config.js";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const video = document.querySelector(".bg-video");
+video.addEventListener("error", () => {
+  const err = video.error;
+  console.error("Video error:", err && err.code, err && err.message, "src:", video.currentSrc);
+});
+video.addEventListener("loadeddata", () => console.log("Video loaded:", video.videoWidth, "x", video.videoHeight));
+
 const audio = document.getElementById("bg-audio");
 const muteBtn = document.getElementById("mute-btn");
 
-audio.muted = true;
 audio.volume = 0.7;
 
 function syncMuteUI() {
@@ -22,7 +28,8 @@ function syncMuteUI() {
   muteBtn.setAttribute("aria-label", muted ? "Unmute music" : "Mute music");
 }
 
-muteBtn.addEventListener("click", async () => {
+muteBtn.addEventListener("click", async (e) => {
+  e.stopPropagation();
   if (audio.muted || audio.paused) {
     audio.muted = false;
     try { await audio.play(); } catch (err) { console.warn("Audio play blocked:", err); }
@@ -32,11 +39,19 @@ muteBtn.addEventListener("click", async () => {
   syncMuteUI();
 });
 
-// Some browsers require a user gesture before audio can play unmuted.
-// If the guest taps anywhere first, try once to start playback (still muted) so unmuting later is instant.
-window.addEventListener("pointerdown", () => {
-  if (audio.paused) audio.play().catch(() => {});
-}, { once: true });
+// Try to autoplay immediately. Most browsers will allow this only if muted.
+audio.muted = true;
+audio.play().catch(() => {});
+
+// On the first user interaction anywhere, unmute so music kicks in "automatically".
+function startAudioOnFirstGesture() {
+  audio.muted = false;
+  audio.play().catch((err) => console.warn("Audio play blocked:", err));
+  syncMuteUI();
+}
+window.addEventListener("pointerdown", startAudioOnFirstGesture, { once: true });
+window.addEventListener("keydown", startAudioOnFirstGesture, { once: true });
+window.addEventListener("touchstart", startAudioOnFirstGesture, { once: true, passive: true });
 
 syncMuteUI();
 
