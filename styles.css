@@ -70,7 +70,7 @@ html { background: var(--bg); }
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: max(env(safe-area-inset-top), 24px) 20px max(env(safe-area-inset-bottom), 24px);
+  padding: calc(48px + env(safe-area-inset-top)) 20px calc(48px + env(safe-area-inset-bottom));
   gap: 24px;
   max-width: 480px;
   margin: 0 auto;
@@ -126,7 +126,7 @@ html { background: var(--bg); }
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 20px;
+  padding: 20px 20px 26px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -283,8 +283,10 @@ button[type="submit"]:disabled { opacity: 0.5; cursor: not-allowed; }
   margin: 0;
   font-size: 14px;
   text-align: center;
-  min-height: 1.2em;
+  min-height: 0;
 }
+
+.status:empty { display: none; }
 .status.error { color: var(--error); }
 .status.success { color: var(--success); }
 
