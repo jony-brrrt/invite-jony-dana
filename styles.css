@@ -138,6 +138,53 @@ html { background: var(--bg); }
   gap: 6px;
 }
 
+.name-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.name-field { flex: 1 1 auto; min-width: 0; }
+.plus-field { flex: 0 0 auto; }
+
+.counter {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.counter-btn {
+  width: 36px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: var(--fg);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.counter-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
+.counter-btn:active:not(:disabled) { background: rgba(255, 255, 255, 0.2); }
+.counter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.counter-value {
+  min-width: 36px;
+  text-align: center;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+
 .field .label {
   font-size: 13px;
   color: var(--muted);

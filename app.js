@@ -63,15 +63,13 @@ muteBtn.addEventListener("click", async (e) => {
 audio.muted = true;
 audio.play().catch(() => {});
 
-// On the first user interaction anywhere, unmute so music kicks in "automatically".
-function startAudioOnFirstGesture() {
-  audio.muted = false;
-  audio.play().catch((err) => console.warn("Audio play blocked:", err));
-  syncMuteUI();
+// Only the mute button controls audio — no implicit unmute on form interactions.
+// Still try to start muted playback on the first interaction in case autoplay was blocked.
+function ensureAudioPlaying() {
+  if (audio.paused) audio.play().catch(() => {});
 }
-window.addEventListener("pointerdown", startAudioOnFirstGesture, { once: true });
-window.addEventListener("keydown", startAudioOnFirstGesture, { once: true });
-window.addEventListener("touchstart", startAudioOnFirstGesture, { once: true, passive: true });
+window.addEventListener("pointerdown", ensureAudioPlaying, { once: true });
+window.addEventListener("touchstart", ensureAudioPlaying, { once: true, passive: true });
 
 syncMuteUI();
 
@@ -81,6 +79,26 @@ const dinnerInput = document.getElementById("dinner");
 const hangInput = document.getElementById("hang");
 const submitBtn = document.getElementById("submit-btn");
 const status = document.getElementById("status");
+
+const PLUS_MIN = 0;
+const PLUS_MAX = 2;
+const plusValueEl = document.getElementById("plus-value");
+const plusMinusBtn = document.getElementById("plus-minus");
+const plusPlusBtn = document.getElementById("plus-plus");
+let plusCount = 0;
+
+function renderPlus() {
+  plusValueEl.textContent = String(plusCount);
+  plusMinusBtn.disabled = plusCount <= PLUS_MIN;
+  plusPlusBtn.disabled = plusCount >= PLUS_MAX;
+}
+plusMinusBtn.addEventListener("click", () => {
+  if (plusCount > PLUS_MIN) { plusCount--; renderPlus(); }
+});
+plusPlusBtn.addEventListener("click", () => {
+  if (plusCount < PLUS_MAX) { plusCount++; renderPlus(); }
+});
+renderPlus();
 
 function setStatus(message, kind) {
   status.textContent = message;
@@ -112,6 +130,7 @@ form.addEventListener("submit", async (e) => {
   try {
     await addDoc(collection(db, "rsvps"), {
       name,
+      plus: plusCount,
       dinner,
       hang,
       createdAt: serverTimestamp(),
@@ -121,8 +140,12 @@ form.addEventListener("submit", async (e) => {
     const parts = [];
     if (dinner) parts.push("dinner");
     if (hang) parts.push("hang");
-    setStatus(`Thanks, ${name}! You're in for ${parts.join(" + ")}. See you soon.`, "success");
+    const guestCount = 1 + plusCount;
+    const guestText = guestCount === 1 ? "" : ` (${guestCount} guests)`;
+    setStatus(`Thanks, ${name}! You're in for ${parts.join(" + ")}${guestText}. See you soon.`, "success");
     form.reset();
+    plusCount = 0;
+    renderPlus();
   } catch (err) {
     console.error(err);
     setStatus("Something went wrong. Please try again.", "error");
