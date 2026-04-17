@@ -1,0 +1,96 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const audio = document.getElementById("bg-audio");
+const muteBtn = document.getElementById("mute-btn");
+
+audio.muted = true;
+audio.volume = 0.7;
+
+function syncMuteUI() {
+  const muted = audio.muted || audio.paused;
+  muteBtn.setAttribute("aria-pressed", muted ? "true" : "false");
+  muteBtn.setAttribute("aria-label", muted ? "Unmute music" : "Mute music");
+}
+
+muteBtn.addEventListener("click", async () => {
+  if (audio.muted || audio.paused) {
+    audio.muted = false;
+    try { await audio.play(); } catch (err) { console.warn("Audio play blocked:", err); }
+  } else {
+    audio.muted = true;
+  }
+  syncMuteUI();
+});
+
+// Some browsers require a user gesture before audio can play unmuted.
+// If the guest taps anywhere first, try once to start playback (still muted) so unmuting later is instant.
+window.addEventListener("pointerdown", () => {
+  if (audio.paused) audio.play().catch(() => {});
+}, { once: true });
+
+syncMuteUI();
+
+const form = document.getElementById("rsvp-form");
+const nameInput = document.getElementById("name");
+const dinnerInput = document.getElementById("dinner");
+const hangInput = document.getElementById("hang");
+const submitBtn = document.getElementById("submit-btn");
+const status = document.getElementById("status");
+
+function setStatus(message, kind) {
+  status.textContent = message;
+  status.classList.remove("error", "success");
+  if (kind) status.classList.add(kind);
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = nameInput.value.trim();
+  const dinner = dinnerInput.checked;
+  const hang = hangInput.checked;
+
+  if (!name) {
+    setStatus("Please enter your name.", "error");
+    nameInput.focus();
+    return;
+  }
+
+  if (!dinner && !hang) {
+    setStatus("Pick at least one: dinner or hang.", "error");
+    return;
+  }
+
+  submitBtn.disabled = true;
+  setStatus("Sending…");
+
+  try {
+    await addDoc(collection(db, "rsvps"), {
+      name,
+      dinner,
+      hang,
+      createdAt: serverTimestamp(),
+      userAgent: navigator.userAgent,
+    });
+
+    const parts = [];
+    if (dinner) parts.push("dinner");
+    if (hang) parts.push("hang");
+    setStatus(`Thanks, ${name}! You're in for ${parts.join(" + ")}. See you soon.`, "success");
+    form.reset();
+  } catch (err) {
+    console.error(err);
+    setStatus("Something went wrong. Please try again.", "error");
+    submitBtn.disabled = false;
+  }
+});
