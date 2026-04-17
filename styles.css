@@ -147,18 +147,38 @@ html { background: var(--bg); }
 .name-input {
   flex: 1 1 auto;
   min-width: 0;
-  background: rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.08);
+  background-image: none;
   color: var(--fg);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 14px;
+  padding: 14px 14px 14px 20px;
   font-size: 16px;
   outline: none;
   transition: border-color 0.15s ease;
   height: 48px;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-text-fill-color: var(--fg);
+  caret-color: var(--fg);
+  box-shadow: none;
 }
 
 .name-input:focus { border-color: var(--fg); }
+
+.name-input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.name-input:-webkit-autofill,
+.name-input:-webkit-autofill:hover,
+.name-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--fg);
+  -webkit-box-shadow: 0 0 0 1000px rgba(20, 20, 20, 0.95) inset;
+  caret-color: var(--fg);
+  transition: background-color 9999s ease-out 0s;
+}
 
 .counter {
   display: flex;
