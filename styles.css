@@ -144,8 +144,21 @@ html { background: var(--bg); }
   align-items: stretch;
 }
 
-.name-field { flex: 1 1 auto; min-width: 0; }
-.plus-field { flex: 0 0 auto; }
+.name-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.15s ease;
+  height: 48px;
+}
+
+.name-input:focus { border-color: var(--fg); }
 
 .counter {
   display: flex;

@@ -64,25 +64,20 @@
 
     <form id="rsvp-form" class="rsvp" novalidate>
       <div class="name-row">
-        <label class="field name-field">
-          <span class="label">Your name</span>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            autocomplete="name"
-            required
-            placeholder="Name"
-          />
-        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          autocomplete="name"
+          required
+          placeholder="Name"
+          class="name-input"
+        />
 
-        <div class="field plus-field">
-          <span class="label">Plus</span>
-          <div class="counter" role="group" aria-label="Additional guests">
-            <button type="button" class="counter-btn" id="plus-minus" aria-label="Decrease">−</button>
-            <span class="counter-value" id="plus-value" aria-live="polite">+0</span>
-            <button type="button" class="counter-btn" id="plus-plus" aria-label="Increase">+</button>
-          </div>
+        <div class="counter" role="group" aria-label="Additional guests">
+          <button type="button" class="counter-btn" id="plus-minus" aria-label="Decrease">−</button>
+          <span class="counter-value" id="plus-value" aria-live="polite">0</span>
+          <button type="button" class="counter-btn" id="plus-plus" aria-label="Increase">+</button>
         </div>
       </div>
 
