@@ -1,14 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  serverTimestamp,
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { firebaseConfig } from "./firebase-config.js";
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const RSVP_ENDPOINT = "https://script.google.com/macros/s/AKfycbzmpkPFhmg0XmlZElmcwyd_Bmh0I2vhKJRcdd6GMug2HoYD8i0QYyW_0PIXJgN_Tw/exec";
 
 const video = document.querySelector(".bg-video");
 video.addEventListener("error", () => {
@@ -128,14 +118,15 @@ form.addEventListener("submit", async (e) => {
   setStatus("Sending…");
 
   try {
-    await addDoc(collection(db, "rsvps"), {
-      name,
-      plus: plusCount,
-      dinner,
-      hang,
-      createdAt: serverTimestamp(),
-      userAgent: navigator.userAgent,
+    // Use text/plain to avoid a CORS preflight that Apps Script doesn't handle.
+    const res = await fetch(RSVP_ENDPOINT, {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ name, plus: plusCount, dinner, hang, website: "" }),
     });
+    const result = await res.json();
+    if (!result.ok) throw new Error(result.error || "submission failed");
 
     const parts = [];
     if (dinner) parts.push("dinner");
