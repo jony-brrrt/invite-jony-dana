@@ -268,16 +268,12 @@ html { background: var(--bg); }
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.check:has(input:checked) {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: var(--fg);
-}
-
 .check input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   accent-color: var(--fg);
   margin: 0;
+  flex-shrink: 0;
 }
 
 .check span {

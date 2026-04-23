@@ -8,7 +8,13 @@ const SHARED_SECRET = '';
 
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents || '{}');
+    let data = {};
+    if (e && e.postData && e.postData.contents) {
+      try { data = JSON.parse(e.postData.contents); } catch (_) { data = {}; }
+    }
+    if ((!data || Object.keys(data).length === 0) && e && e.parameter) {
+      data = e.parameter;
+    }
 
     if (SHARED_SECRET && data.secret !== SHARED_SECRET) {
       return jsonResponse({ ok: false, error: 'unauthorized' });
@@ -30,8 +36,14 @@ function doPost(e) {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
       || SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
 
+    const now = new Date();
+    const tz = Session.getScriptTimeZone();
+    const dateStr = Utilities.formatDate(now, tz, 'yyyy-MM-dd');
+    const timeStr = Utilities.formatDate(now, tz, 'HH:mm');
+
     sheet.appendRow([
-      new Date(),
+      dateStr,
+      timeStr,
       name,
       plus,
       dinner ? 'Yes' : '',
