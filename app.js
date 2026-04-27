@@ -113,7 +113,7 @@ const submitBtn = document.getElementById("submit-btn");
 const status = document.getElementById("status");
 
 const PLUS_MIN = 0;
-const PLUS_MAX = 2;
+const PLUS_MAX = 1;
 const plusValueEl = document.getElementById("plus-value");
 const plusMinusBtn = document.getElementById("plus-minus");
 const plusPlusBtn = document.getElementById("plus-plus");
