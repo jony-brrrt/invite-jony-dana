@@ -63,9 +63,26 @@ function syncMuteUI() {
   muteBtn.setAttribute("aria-label", muted ? "Unmute music" : "Mute music");
 }
 
+let firstUnmute = true;
+
 muteBtn.addEventListener("click", async (e) => {
   e.stopPropagation();
   if (audio.muted || audio.paused) {
+    if (firstUnmute) {
+      // Skip ahead so it feels mid-song instead of starting from 0.
+      const target = Math.random() * 60;
+      try {
+        if (!isFinite(audio.duration) || audio.duration === 0) {
+          await new Promise((resolve) => {
+            audio.addEventListener("loadedmetadata", resolve, { once: true });
+            setTimeout(resolve, 500);
+          });
+        }
+        const max = isFinite(audio.duration) ? Math.min(60, audio.duration - 1) : 60;
+        audio.currentTime = Math.min(target, max);
+      } catch (_) {}
+      firstUnmute = false;
+    }
     audio.muted = false;
     try { await audio.play(); } catch (err) { console.warn("Audio play blocked:", err); }
   } else {
