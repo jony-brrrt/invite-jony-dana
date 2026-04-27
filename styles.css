@@ -75,7 +75,7 @@ html { background: var(--bg); }
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: calc(48px + env(safe-area-inset-top)) 20px calc(48px + env(safe-area-inset-bottom));
+  padding: calc(68px + env(safe-area-inset-top)) 20px calc(48px + env(safe-area-inset-bottom));
   gap: 24px;
   max-width: 480px;
   margin: 0 auto;
