@@ -280,11 +280,33 @@ html { background: var(--bg); }
 }
 
 .check input[type="checkbox"] {
-  width: 13px;
-  height: 13px;
-  accent-color: var(--fg);
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--fg);
+  border-radius: 3px;
+  background: transparent;
   margin: 0;
   flex-shrink: 0;
+  display: inline-grid;
+  place-content: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.check input[type="checkbox"]::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  background: var(--fg);
+  border-radius: 1px;
+  transform: scale(0);
+  transition: transform 0.1s ease;
+}
+
+.check input[type="checkbox"]:checked::before {
+  transform: scale(1);
 }
 
 .check span {
