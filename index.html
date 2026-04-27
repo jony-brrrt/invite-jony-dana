@@ -8,18 +8,13 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <video
-    class="bg-video"
-    src="assets/bg.mp4"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="auto"
-    disablepictureinpicture
-    disableremoteplayback
-    aria-hidden="true"
-  ></video>
+  <div class="bg-slideshow" aria-hidden="true">
+    <div class="bg-slide" data-src="assets/bg1.jpeg"></div>
+    <div class="bg-slide" data-src="assets/bg2.jpeg"></div>
+    <div class="bg-slide" data-src="assets/bg3.jpeg"></div>
+    <div class="bg-slide" data-src="assets/bg4.jpeg"></div>
+    <div class="bg-slide" data-src="assets/bg5.jpeg"></div>
+  </div>
   <div class="overlay" aria-hidden="true"></div>
 
   <audio
@@ -88,11 +83,11 @@
         <legend>I'm in for</legend>
         <label class="check">
           <input type="checkbox" id="dinner" name="dinner" />
-          <span>DINNER</span>
+          <span>Dinner</span>
         </label>
         <label class="check">
           <input type="checkbox" id="hang" name="hang" />
-          <span>HANG</span>
+          <span>Hang</span>
         </label>
       </fieldset>
 

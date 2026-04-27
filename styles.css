@@ -24,31 +24,36 @@ html, body {
 
 html { background: var(--bg); }
 
-.bg-video {
+.bg-slideshow {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  min-width: 100vw;
-  min-height: 100vh;
-  object-fit: cover;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
-  display: block;
+  overflow: hidden;
+}
+
+.bg-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  will-change: opacity, transform;
+}
+
+.bg-slide.is-active { opacity: 1; }
+.bg-slide.is-leaving { opacity: 0; }
+
+@keyframes bg-zoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
 }
 
 .overlay { z-index: 1 !important; }
 .content { position: relative; z-index: 2; }
 .mute-btn { z-index: 10; }
-
-.bg-video::-webkit-media-controls,
-.bg-video::-webkit-media-controls-panel,
-.bg-video::-webkit-media-controls-start-playback-button {
-  display: none !important;
-  -webkit-appearance: none;
-}
 
 .overlay {
   position: fixed;
@@ -171,6 +176,8 @@ html { background: var(--bg); }
   opacity: 1;
 }
 
+.name-input { color: var(--muted); -webkit-text-fill-color: var(--muted); }
+
 .name-input:-webkit-autofill,
 .name-input:-webkit-autofill:hover,
 .name-input:-webkit-autofill:focus {
@@ -269,15 +276,16 @@ html { background: var(--bg); }
 }
 
 .check input[type="checkbox"] {
-  width: 22px;
-  height: 22px;
+  width: 13px;
+  height: 13px;
   accent-color: var(--fg);
   margin: 0;
   flex-shrink: 0;
 }
 
 .check span {
-  font-size: 16px;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 button[type="submit"] {

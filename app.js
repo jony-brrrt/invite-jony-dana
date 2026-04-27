@@ -1,31 +1,56 @@
 const RSVP_ENDPOINT = "https://script.google.com/macros/s/AKfycbzmpkPFhmg0XmlZElmcwyd_Bmh0I2vhKJRcdd6GMug2HoYD8i0QYyW_0PIXJgN_Tw/exec";
 
-const video = document.querySelector(".bg-video");
-video.addEventListener("error", () => {
-  const err = video.error;
-  console.error("Video error:", err && err.code, err && err.message, "src:", video.currentSrc);
-});
-video.addEventListener("loadeddata", () => console.log("Video loaded:", video.videoWidth, "x", video.videoHeight, "paused:", video.paused));
-video.addEventListener("playing", () => console.log("Video playing"));
-
-// Force play attempts — some Android Chrome builds need this nudge.
-function tryPlayVideo() {
-  video.muted = true;
-  video.setAttribute("muted", "");
-  const p = video.play();
-  if (p && typeof p.catch === "function") {
-    p.catch((err) => console.warn("Video play blocked:", err && err.name, err && err.message));
+const slides = Array.from(document.querySelectorAll(".bg-slide"));
+slides.forEach((s) => {
+  const src = s.dataset.src;
+  if (src) {
+    const img = new Image();
+    img.src = src;
+    s.style.backgroundImage = `url("${src}")`;
   }
+});
+
+let currentSlide = Math.floor(Math.random() * slides.length);
+
+const HOLD_MS = 10000;
+const FADE_MS = 1500;
+const ZOOM_MS = HOLD_MS + FADE_MS;
+
+function startZoom(slide) {
+  // Cancel any prior animation so we don't stack transforms.
+  if (slide._zoomAnim) slide._zoomAnim.cancel();
+  slide._zoomAnim = slide.animate(
+    [{ transform: "scale(1)" }, { transform: "scale(1.06)" }],
+    { duration: ZOOM_MS, easing: "linear", fill: "forwards" }
+  );
 }
 
-tryPlayVideo();
-document.addEventListener("DOMContentLoaded", tryPlayVideo);
-window.addEventListener("load", tryPlayVideo);
-window.addEventListener("pointerdown", tryPlayVideo, { once: true });
-window.addEventListener("touchstart", tryPlayVideo, { once: true, passive: true });
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible" && video.paused) tryPlayVideo();
-});
+function activateSlide(index) {
+  const s = slides[index];
+  s.classList.remove("is-leaving");
+  s.classList.add("is-active");
+  startZoom(s);
+}
+
+function leaveSlide(index) {
+  const s = slides[index];
+  s.classList.remove("is-active");
+  s.classList.add("is-leaving");
+  setTimeout(() => {
+    s.classList.remove("is-leaving");
+    if (s._zoomAnim) { s._zoomAnim.cancel(); s._zoomAnim = null; }
+  }, FADE_MS);
+}
+
+if (slides.length > 0) {
+  activateSlide(currentSlide);
+  setInterval(() => {
+    const prev = currentSlide;
+    currentSlide = (currentSlide + 1) % slides.length;
+    activateSlide(currentSlide);
+    leaveSlide(prev);
+  }, HOLD_MS);
+}
 
 const audio = document.getElementById("bg-audio");
 const muteBtn = document.getElementById("mute-btn");
