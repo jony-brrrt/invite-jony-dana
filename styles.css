@@ -43,8 +43,12 @@ html { background: var(--bg); }
   will-change: opacity, transform;
 }
 
+/* Fallback so the first slide is visible even if JS fails to run. */
+.bg-slide:first-child { opacity: 1; }
 .bg-slide.is-active { opacity: 1; }
 .bg-slide.is-leaving { opacity: 0; }
+/* Once JS has activated some other slide, the first-child fallback bows out. */
+.bg-slideshow:has(.bg-slide.is-active) .bg-slide:first-child:not(.is-active):not(.is-leaving) { opacity: 0; }
 
 @keyframes bg-zoom {
   from { transform: scale(1); }
