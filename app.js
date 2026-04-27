@@ -12,7 +12,7 @@ slides.forEach((s) => {
 
 let currentSlide = Math.floor(Math.random() * slides.length);
 
-const HOLD_MS = 10000;
+const HOLD_MS = 5000;
 const FADE_MS = 1500;
 const ZOOM_MS = HOLD_MS + FADE_MS;
 
