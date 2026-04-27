@@ -78,11 +78,15 @@ html { background: var(--bg); }
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   padding: calc(68px + env(safe-area-inset-top)) 20px calc(48px + env(safe-area-inset-bottom));
   gap: 24px;
   max-width: 480px;
   margin: 0 auto;
+}
+
+@media (min-height: 760px) {
+  .content { gap: 36px; }
 }
 
 .details {
@@ -97,7 +101,7 @@ html { background: var(--bg); }
 
 .details h1 {
   margin: 0 0 12px;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
@@ -105,7 +109,7 @@ html { background: var(--bg); }
 .details .when,
 .details .where {
   margin: 4px 0;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .details .blurb {
